@@ -43,7 +43,9 @@
     },
     "extra": {
         "laravel": {
-            "providers": []
+            "providers": [
+                "SaeedHosan\\Useful\\UsefulServiceProvider"
+            ]
         }
     },
     "scripts": {
