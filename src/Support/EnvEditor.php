@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SaeedHosan\Useful\Support;
 
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 
 class EnvEditor
@@ -12,7 +13,7 @@ class EnvEditor
     /**
      * Check if a key exists in the .env file.
      */
-    public static function keyExists(string $key): bool
+    public static function has(string $key): bool
     {
         if (! File::exists(static::envPath())) {
             return false;
@@ -23,7 +24,7 @@ class EnvEditor
         return preg_match("/^{$key}=.*$/m", $content) === 1;
     }
 
-    public static function editKey(string $key, string $value): bool
+    public static function update(string $key, string $value): bool
     {
         if (! File::exists(static::envPath())) {
             return false;
@@ -50,7 +51,7 @@ class EnvEditor
     /**
      * Add a new key=value pair to the .env file.
      */
-    public static function addKey(string $key, string $value): bool
+    public static function add(string $key, string $value): bool
     {
         if (! File::exists(static::envPath())) {
             File::put(static::envPath(), '');
@@ -67,39 +68,29 @@ class EnvEditor
     }
 
     /**
-     * Set a key in the .env file.
-     *
-     * Will edit the key if it exists, or add it if missing.
-     */
-    public static function setKey(string $key, string $value): bool
-    {
-        return static::keyExists($key)
-            ? static::editKey($key, $value)
-            : static::addKey($key, $value);
-    }
-
-    /**
      * Optionally reload Laravel's configuration in memory.
      */
     public static function reloadConfig(): void
     {
-        if (function_exists('app')) {
-            // Clear cached config in memory
-            /** @phpstan-ignore-next-line */
-            app()->make(Repository::class)->set(null);
+
+        if (! function_exists('app')) {
+            return;
         }
+
+        Artisan::call('config:clear');
+        Artisan::call('config:cache');
+        Artisan::call('queue:restart');
+        Config::clearResolvedInstances();
     }
 
     /**
-     * Gets the value of an environment variable.
+     * Put the value into environment variable for the given env key.
      */
-    public static function put(string $key, string $value): void
+    public static function put(string $key, string $value): bool
     {
-        if (self::keyExists($key)) {
-            self::editKey($key, $value);
-        } else {
-            self::addKey($key, $value);
-        }
+        return static::has($key)
+            ? static::update($key, $value)
+            : static::add($key, $value);
     }
 
     /**

@@ -377,26 +377,61 @@ php artisan make:action CreateExampleAction -i # invokable
 
 ### EnvEditor
 
-The `EnvEditor` support class provides a simple way to modify laravel environment variables.
+The `EnvEditor` support class provides a simple, safe way to read and modify Laravel `.env` environment variables.
 
-It handles quoting, escaping, and ensures your environment configuration stays consistent.
+It handles automatic value quoting, escaping of special characters (like double quotes), and ensures your environment configuration stays consistent.
+
+#### Check if a key exists
+
+Use `has(string $key): bool` to determine if a key is present in the `.env` file. Returns `false` if the `.env` file does not exist.
 
 ```php
 use SaeedHosan\Useful\Support\EnvEditor;
 
-EnvEditor::addKey('APP_NAME', 'My Application');
-// APP_NAME="My Application"
-
-EnvEditor::editKey('APP_DEBUG', 'true');
-
-EnvEditor::setKey('APP_URL', 'https://example.com');
-
-EnvEditor::keyExists('APP_DEBUG'); // bool
+EnvEditor::has('APP_NAME'); // true if APP_DEBUG exists, false otherwise
 ```
 
-The `put()` method works like `setKey()` and before check with `keyExists`:
+#### Add a new key
+
+Use `add(string $key, string $value): bool` to append a new key-value pair to the `.env` file. This will create the `.env` file if it does not exist yet.
 
 ```php
-EnvEditor::put('DB_HOST', 'localhost'); // add new
-EnvEditor::put('DB_HOST', '127.0.0.1'); // Updates existing
+EnvEditor::add('APP_NAME', 'My Application');
+// Appends to .env: APP_NAME="My Application"
+```
+
+#### Update an existing key
+
+Use `update(string $key, string $value): bool` to modify the value of an existing key in the `.env` file. Returns `false` if the key does not exist.
+
+```php
+EnvEditor::update('APP_DEBUG', 'true');
+// Updates existing APP_DEBUG value to "true"
+```
+
+#### Add or update (convenience method)
+
+Use `put(string $key, string $value): bool` to automatically add a new key or update an existing one, without manually checking if the key exists first:
+
+```php
+EnvEditor::put('DB_HOST', 'localhost');   // Adds new key if DB_HOST does not exist
+EnvEditor::put('DB_HOST', '127.0.0.1');  // Updates existing DB_HOST value
+```
+
+#### Reload configuration
+
+After modifying the `.env` file, use `reloadConfig(): void` to apply changes by clearing cached configuration, re-caching, and restarting queue workers:
+
+```php
+EnvEditor::reloadConfig();
+```
+
+This executes `config:clear`, `config:cache`, `queue:restart`, and clears resolved config instances.
+
+#### Get environment file path
+
+Use `envPath(): string` to retrieve the full path to the current Laravel `.env` file:
+
+```php
+EnvEditor::envPath(); // e.g. /path/to/your/project/.env
 ```
