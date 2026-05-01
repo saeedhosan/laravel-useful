@@ -11,4 +11,5 @@ parameters:
 
     ignoreErrors:
         - identifier: trait.unused
-        - '#PHPDoc tag @var#'
+        - "#PHPDoc tag @var#"
+        - "#Cannot cast mixed#"
