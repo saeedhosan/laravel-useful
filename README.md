@@ -18,6 +18,7 @@ This package provides Laravel Eloquent support, traits, and additional classes.
     - [HasUuid Trait](#hasuuid-trait)
     - [HasRouteBinding](#HasRouteBinding)
     - [HasStaticAccess](#hasstaticaccess)
+- [Commands](#commands)
 - [Support](#support)
     - [Traits](#support-traits)
     - [Path](#support-path)
@@ -317,6 +318,17 @@ User::findByRouteKey($key); // Alias of findByKey
 - Static access without instantiate.
 - Improved readability – Clear intent in routing, and helpers.
 - Zero side effects – Uses fresh model instances internally.
+
+## Commands
+
+The package provides few commands that are frequntly used for every project
+
+### Make action class
+
+```bash
+php artisan make:action CreateExampleAction
+php artisan make:action CreateExampleAction -i # invokable
+```
 
 ## Support
 
