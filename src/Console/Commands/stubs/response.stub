@@ -16,6 +16,6 @@ class {{ class }} implements Responsable
      */
     public function toResponse($request)
     {
-        return response('The response content');
+        return response('The response content is empty');
     }
 }
