@@ -375,6 +375,13 @@ php artisan make:action CreateExampleAction
 php artisan make:action CreateExampleAction -i # invokable
 ```
 
+### Make response class
+
+```bash
+php artisan make:response CreateExampleResponse
+php artisan make:response CreateExampleResponse -i # invokable
+```
+
 ### EnvEditor
 
 The `EnvEditor` support class provides a simple, safe way to read and modify Laravel `.env` environment variables.
