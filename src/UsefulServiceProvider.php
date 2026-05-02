@@ -44,6 +44,7 @@ class UsefulServiceProvider extends BaseServiceProvider
 
         $this->commands([
             Console\Commands\ActionMakeCommand::class,
+            Console\Commands\ResponseMakeClass::class,
         ]);
     }
 }
