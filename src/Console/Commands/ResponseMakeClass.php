@@ -38,7 +38,7 @@ class ResponseMakeClass extends GeneratorCommand
      */
     protected function resolveStubPath(string $stub)
     {
-        return file_exists($customPath = $this->laravel->basePath(mb_trim($stub, '/')))
+        return file_exists($customPath = $this->laravel->basePath((string) mb_trim($stub, '/')))
             ? $customPath
             : __DIR__.$stub;
     }
